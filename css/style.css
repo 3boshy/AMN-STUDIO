@@ -142,7 +142,9 @@ a {
 
 /* Topbar */
 
-.topbar {
+ .topbar {
+    direction: ltr;
+    unicode-bidi: isolate;
     position: sticky;
     top: 0;
     z-index: 50;
@@ -159,95 +161,20 @@ a {
     padding: 14px 0;
 }
 
-/* خلي الـ topbar والـ tabs ثابتة بمكانها حتى لو الصفحة صارت RTL */
-.topbar,
-.topbar * {
-    direction: ltr;
+
+/* ===== Language button ===== */
+
+.langBtn {
+    padding-inline: 12px
 }
 
-
-/* ===== Language switch (EN | AR) ===== */
-
-.langSwitch {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, .14);
-    background: rgba(255, 255, 255, .04);
-    color: #fff;
-    cursor: pointer;
-    user-select: none;
-    transition: transform .15s ease, background .2s ease, border-color .2s ease;
+.langBtn__icon {
+    font-size: 16px
 }
 
-.langSwitch:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, .07);
-    border-color: rgba(167, 139, 250, .26);
-}
-
-.langSwitch__globe {
-    font-size: 16px;
-    filter: drop-shadow(0 10px 18px rgba(139, 92, 246, .18));
-}
-
-.langSwitch__labels {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 900;
-    letter-spacing: .5px;
-    font-size: 12px;
-}
-
-.langSwitch__sep {
-    opacity: .6;
-}
-
-.langSwitch__label {
-    opacity: .75;
-    transition: opacity .2s ease;
-}
-
-.langSwitch__track {
-    position: relative;
-    width: 46px;
-    height: 22px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, .14);
-    background: rgba(0, 0, 0, .22);
-    overflow: hidden;
-}
-
-.langSwitch__pill {
-    position: absolute;
-    inset: 2px;
-    width: 18px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, rgba(139, 92, 246, .75), rgba(139, 92, 246, .28));
-    box-shadow: 0 10px 24px rgba(139, 92, 246, .18);
-    transform: translateX(0);
-    transition: transform .35s cubic-bezier(.2, .9, .2, 1);
-}
-
-/* when Arabic is active */
-html[dir="rtl"] .langSwitch__pill {
-    transform: translateX(24px);
-}
-
-html[dir="ltr"] .langSwitch__label[data-lang="en"],
-html[dir="rtl"] .langSwitch__label[data-lang="ar"] {
-    opacity: 1;
-}
-
-/* Small comfy transition on language change */
-body.is-lang-switching main {
-    transition: opacity .22s ease, transform .22s ease;
-    opacity: .82;
-    transform: translateY(2px);
+.langBtn__text {
+    font-weight: 800;
+    letter-spacing: .5px
 }
 
 
@@ -286,11 +213,17 @@ body.is-lang-switching main {
 
 /* RTL tweaks when Arabic is active */
 
-html[dir="rtl"] .hero__inner {
-    direction: rtl
+/* RTL layout (only main content flips) */
+main[dir="rtl"] .hero__inner{
+    grid-template-areas: "visual copy";
+    direction: rtl;
 }
+main[dir="rtl"] .hero__copy{ text-align: right; }
+main[dir="rtl"] .pill{ direction: rtl; }
 
-html[dir="rtl"] .hero__cta {
+
+
+main[dir="rtl"] .hero__cta {
     justify-content: flex-start
 }
 
@@ -316,8 +249,7 @@ html[dir="rtl"] .hero__cta {
 }
 
 .brand__name {
-    font-size: 22px;
-    line-height: 1;
+    font-size: 18px
 }
 
 .nav {
@@ -485,6 +417,51 @@ html[dir="rtl"] .hero__cta {
 }
 
 
+
+
+/* Language tab (EN | AR) — inside tabs */
+.nav__lang{
+    margin-left: 8px;
+    padding-left: 10px;
+    border-left: 1px solid rgba(255,255,255,.10);
+}
+
+.langTab{
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    background: rgba(255, 255, 255, .04);
+    color: rgba(255,255,255,.78);
+    cursor: pointer;
+    user-select: none;
+    transition: transform .15s ease, background .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.langTab:hover{ transform: translateY(-1px); background: rgba(255,255,255,.07); color:#fff; }
+
+.langTab__opt{ font-weight: 800; letter-spacing: .4px; font-size: 12px; opacity: .75; transition: opacity .2s ease; }
+.langTab__sep{ opacity: .35; }
+
+.langTab[data-active="en"] .langTab__opt[data-lang="en"],
+.langTab[data-active="ar"] .langTab__opt[data-lang="ar"]{ opacity: 1; }
+
+.langTab__underline{
+    position: absolute;
+    left: 12px;
+    bottom: 6px;
+    height: 2px;
+    width: 18px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--violet2), var(--pink));
+    transform: translateX(var(--u-x, 0px));
+    transition: transform .26s ease, width .26s ease;
+    box-shadow: 0 0 18px rgba(167, 139, 250, .35);
+}
+
 /* Hero */
 
 .hero {
@@ -499,12 +476,14 @@ html[dir="rtl"] .hero__cta {
 
 .hero__inner {
     display: grid;
+    grid-template-areas: "copy visual";
     grid-template-columns: 1.05fr .95fr;
     gap: 26px;
     align-items: center;
 }
 
 .hero__copy {
+    grid-area: copy;
     min-width: 0
 }
 
@@ -589,7 +568,8 @@ html[dir="rtl"] .hero__cta {
 
 /* Visual */
 
-.hero__visual {
+ .hero__visual {
+    grid-area: visual;
     display: flex;
     justify-content: flex-start;
 }
@@ -1024,7 +1004,8 @@ html[dir="rtl"] .hero__cta {
     .hero__inner {
         grid-template-columns: 1fr;
     }
-    .hero__visual {
+     .hero__visual {
+    grid-area: visual;
         justify-content: center;
     }
     .hero__mini {

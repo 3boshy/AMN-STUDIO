@@ -138,40 +138,60 @@ function startPixelTyping() {
 }
 
 function applyLang(lang) {
-    // subtle comfy transition
+    activeLang = lang;
+    // Keep the top bar stable: do NOT flip the whole document direction.
+    document.documentElement.lang = lang;
+    document.documentElement.dir = "ltr";
+    const main = document.getElementById("main");
+    if (main) main.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+    // comfy visual transition
     document.body.classList.add("is-lang-switching");
     window.clearTimeout(applyLang._t);
-    applyLang._t = window.setTimeout(() => {
-        document.body.classList.remove("is-lang-switching");
-    }, 220);
-
-    activeLang = lang;
-
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-
-    // EN | AR UI is handled by CSS (pill moves based on dir)
-
+    applyLang._t = window.setTimeout(() => document.body.classList.remove("is-lang-switching"), 260);
+    // i18n text
     document.querySelectorAll("[data-i18n]").forEach((el) => {
         const key = el.getAttribute("data-i18n");
         const val = dict[lang][key];
         if (val == null) return;
-
         const allowHtml = ["hero_title", "footer"].includes(key);
         if (allowHtml) el.innerHTML = val;
         else el.textContent = val;
     });
-
+    // Update language tab underline/active state
+    updateLangTabUI(lang);
     startPixelTyping();
 }
 
-// ===== Language toggle button =====
-const langToggle = document.getElementById("langToggle");
-if (langToggle) {
-    langToggle.addEventListener("click", () => {
-        applyLang(activeLang === "en" ? "ar" : "en");
+// ===== Language tab (EN | AR) =====
+const langTab = document.getElementById("langTab");
+
+function updateLangTabUI(lang){
+    if (!langTab) return;
+    langTab.dataset.active = lang;
+    const underline = langTab.querySelector(".langTab__underline");
+    const opt = langTab.querySelector(`.langTab__opt[data-lang="${lang}"]`);
+    if (!underline || !opt) return;
+    const rBtn = langTab.getBoundingClientRect();
+    const rOpt = opt.getBoundingClientRect();
+    const left = (rOpt.left - rBtn.left) + langTab.scrollLeft;
+    underline.style.width = `${rOpt.width}px`;
+    underline.style.transform = `translateX(${left}px)`;
+}
+
+if (langTab) {
+    langTab.addEventListener("click", (e) => {
+        const opt = e.target.closest(".langTab__opt");
+        if (!opt) {
+            // click on empty area: toggle
+            applyLang(activeLang === "en" ? "ar" : "en");
+            return;
+        }
+        const lang = opt.getAttribute("data-lang");
+        if (lang && lang !== activeLang) applyLang(lang);
     });
+    window.addEventListener("resize", () => updateLangTabUI(activeLang));
 }
 
 // ===== Init =====
 applyLang("en");
+requestAnimationFrame(() => updateLangTabUI(activeLang));
