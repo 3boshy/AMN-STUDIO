@@ -55,10 +55,18 @@
             </nav>
 
             <div class="topbar__actions">
-                <!-- Language toggle with Unicode logo -->
-                <button class="btn btn--ghost langBtn" id="langToggle" type="button" aria-label="Switch language">
-          <span class="langBtn__icon" aria-hidden="true">🌐</span>
-          <span class="langBtn__text" id="langLabel">AR</span>
+                <!-- Language switch (EN | AR) -->
+                <button class="langSwitch" id="langToggle" type="button" aria-label="Switch language" aria-live="polite">
+        
+          <span class="langSwitch__track" aria-hidden="true">
+            <span class="langSwitch__pill"></span>
+          </span>
+
+          <span class="langSwitch__labels" aria-hidden="true">
+            <span class="langSwitch__label" data-lang="en">EN</span>
+            <span class="langSwitch__sep">|</span>
+            <span class="langSwitch__label" data-lang="ar">AR</span>
+          </span>
         </button>
             </div>
         </div>

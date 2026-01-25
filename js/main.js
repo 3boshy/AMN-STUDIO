@@ -138,13 +138,19 @@ function startPixelTyping() {
 }
 
 function applyLang(lang) {
+    // subtle comfy transition
+    document.body.classList.add("is-lang-switching");
+    window.clearTimeout(applyLang._t);
+    applyLang._t = window.setTimeout(() => {
+        document.body.classList.remove("is-lang-switching");
+    }, 220);
+
     activeLang = lang;
 
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
 
-    const langLabel = document.getElementById("langLabel");
-    if (langLabel) langLabel.textContent = lang === "ar" ? "EN" : "AR";
+    // EN | AR UI is handled by CSS (pill moves based on dir)
 
     document.querySelectorAll("[data-i18n]").forEach((el) => {
         const key = el.getAttribute("data-i18n");
