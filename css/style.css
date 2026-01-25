@@ -451,7 +451,8 @@ main[dir="rtl"] .hero__cta {
 
 .langTab__underline{
     position: absolute;
-    left: 12px;
+    /* IMPORTANT: keep origin at 0; JS positions using translateX based on container rects */
+    left: 0;
     bottom: 6px;
     height: 2px;
     width: 18px;
