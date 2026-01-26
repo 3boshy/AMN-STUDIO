@@ -142,9 +142,7 @@ a {
 
 /* Topbar */
 
- .topbar {
-    direction: ltr;
-    unicode-bidi: isolate;
+.topbar {
     position: sticky;
     top: 0;
     z-index: 50;
@@ -213,17 +211,11 @@ a {
 
 /* RTL tweaks when Arabic is active */
 
-/* RTL layout (only main content flips) */
-main[dir="rtl"] .hero__inner{
-    grid-template-areas: "visual copy";
-    direction: rtl;
+html[dir="rtl"] .hero__inner {
+    direction: rtl
 }
-main[dir="rtl"] .hero__copy{ text-align: right; }
-main[dir="rtl"] .pill{ direction: rtl; }
 
-
-
-main[dir="rtl"] .hero__cta {
+html[dir="rtl"] .hero__cta {
     justify-content: flex-start
 }
 
@@ -345,11 +337,97 @@ main[dir="rtl"] .hero__cta {
     box-shadow: 0 10px 30px rgba(139, 92, 246, .12);
 }
 
-.topbar__actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/* ===== Language tab (EN | AR) — inside nav ===== */
+
+html[data-lang="en"] { --lang-x: 0; }
+html[data-lang="ar"] { --lang-x: 1; }
+
+/* separator + spacing (desktop) */
+.nav__lang{
+  margin-left: 10px;
+  padding-left: 12px;
+  position: relative;
+  display: flex;
 }
+.nav__lang::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:50%;
+  width:1px;
+  height:18px;
+  transform:translateY(-50%);
+  background: rgba(255,255,255,.12);
+}
+
+.langTab{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 14px 12px; /* extra bottom for underline */
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.86);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .15s ease, background .2s ease;
+}
+.langTab:hover{ transform: translateY(-1px); }
+
+.langTab__opt{
+  width: 28px;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: .5px;
+  font-size: 12px;
+  opacity: .62;
+  transition: opacity .22s ease;
+}
+.langTab__sep{ opacity: .45; font-weight: 900; }
+
+html[data-lang="en"] .langTab__opt[data-lang="en"],
+html[data-lang="ar"] .langTab__opt[data-lang="ar"]{ opacity: 1; }
+
+/* Apple-ish animated underline (positioned by JS for perfect accuracy) */
+.langTab__underline{
+  position: absolute;
+  left: 0; /* JS will translateX */
+  bottom: 6px;
+  height: 2px;
+  width: 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 10px 24px rgba(139,92,246,.22);
+  transform: translateX(14px);
+  transition: transform .28s ease, width .28s ease, opacity .2s ease;
+  pointer-events: none;
+}
+
+/* Mobile: language drops to its own row (your request) */
+@media (max-width: 820px){
+  .topbar__inner{ flex-wrap: wrap; }
+  .nav{ flex-wrap: wrap; justify-content: flex-end; }
+
+  .nav__lang{
+    width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+    margin-top: 10px;
+  }
+  .nav__lang::before{ display:none; }
+
+  .langTab{
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* remove legacy actions row (unused now) */
+.topbar__actions{ display:none; }
 
 
 /* Buttons */
@@ -417,52 +495,6 @@ main[dir="rtl"] .hero__cta {
 }
 
 
-
-
-/* Language tab (EN | AR) — inside tabs */
-.nav__lang{
-    margin-left: 8px;
-    padding-left: 10px;
-    border-left: 1px solid rgba(255,255,255,.10);
-}
-
-.langTab{
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, .14);
-    background: rgba(255, 255, 255, .04);
-    color: rgba(255,255,255,.78);
-    cursor: pointer;
-    user-select: none;
-    transition: transform .15s ease, background .2s ease, border-color .2s ease, color .2s ease;
-}
-
-.langTab:hover{ transform: translateY(-1px); background: rgba(255,255,255,.07); color:#fff; }
-
-.langTab__opt{ font-weight: 800; letter-spacing: .4px; font-size: 12px; opacity: .75; transition: opacity .2s ease; }
-.langTab__sep{ opacity: .35; }
-
-.langTab[data-active="en"] .langTab__opt[data-lang="en"],
-.langTab[data-active="ar"] .langTab__opt[data-lang="ar"]{ opacity: 1; }
-
-.langTab__underline{
-    position: absolute;
-    /* IMPORTANT: keep origin at 0; JS positions using translateX based on container rects */
-    left: 0;
-    bottom: 6px;
-    height: 2px;
-    width: 18px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--violet2), var(--pink));
-    transform: translateX(var(--u-x, 0px));
-    transition: transform .26s ease, width .26s ease;
-    box-shadow: 0 0 18px rgba(167, 139, 250, .35);
-}
-
 /* Hero */
 
 .hero {
@@ -477,14 +509,12 @@ main[dir="rtl"] .hero__cta {
 
 .hero__inner {
     display: grid;
-    grid-template-areas: "copy visual";
     grid-template-columns: 1.05fr .95fr;
     gap: 26px;
     align-items: center;
 }
 
 .hero__copy {
-    grid-area: copy;
     min-width: 0
 }
 
@@ -569,8 +599,7 @@ main[dir="rtl"] .hero__cta {
 
 /* Visual */
 
- .hero__visual {
-    grid-area: visual;
+.hero__visual {
     display: flex;
     justify-content: flex-start;
 }
@@ -1005,8 +1034,7 @@ main[dir="rtl"] .hero__cta {
     .hero__inner {
         grid-template-columns: 1fr;
     }
-     .hero__visual {
-    grid-area: visual;
+    .hero__visual {
         justify-content: center;
     }
     .hero__mini {
