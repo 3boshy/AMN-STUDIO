@@ -43,7 +43,7 @@
           <span class="sr-only">Toggle menu</span>
         </button>
 
-                <!-- only Home -->
+                <!-- Tabs -->
                 <ul class="nav__menu" id="navMenu">
                     <li>
                         <a class="tab tab--active" href="#home" aria-current="page" data-i18n="nav_home">
@@ -51,16 +51,17 @@
                             <span class="tab__glow" aria-hidden="true"></span>
                         </a>
                     </li>
-                    <li class="nav__lang">
-                        <button class="langTab" id="langTab" type="button" aria-label="Switch language" aria-live="polite">
-                            <span class="langTab__opt" data-lang="en">EN</span>
-                            <span class="langTab__sep" aria-hidden="true">|</span>
-                            <span class="langTab__opt" data-lang="ar">AR</span>
-                            <span class="langTab__underline" aria-hidden="true"></span>
-                        </button>
-                    </li>
-
                 </ul>
+
+                <!-- Language (acts like a tab). On mobile it drops to its own row. -->
+                <div class="nav__lang">
+                    <button class="langTab" id="langTab" type="button" aria-label="Switch language" aria-live="polite">
+                    <span class="langTab__opt" data-lang="en">EN</span>
+                    <span class="langTab__sep" aria-hidden="true">|</span>
+                    <span class="langTab__opt" data-lang="ar">AR</span>
+                    <span class="langTab__underline" aria-hidden="true"></span>
+                </button>
+                </div>
             </nav>
         </div>
     </header>
