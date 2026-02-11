@@ -35,6 +35,7 @@ document.querySelectorAll(".tab").forEach((tab) => {
 const dict = {
     en: {
         nav_home: "Home",
+        nav_projects: "Projects",
         pill: "Software • Cybersecurity • Education",
         hero_title: 'Building <span class="grad">secure digital</span><br>solutions — the right way',
         hero_subtitle: "AMN Studios builds modern software with a cybersecurity-first mindset, and teaches code with real-world best practices.",
@@ -56,10 +57,14 @@ const dict = {
         chip_edu: "Education",
         chip_secure: "Secure",
 
+        projects_title: "Projects",
+        projects_desc: "Selected work focused on clean UI, performance, and security-first design.",
+
         footer: '© <span id="year"></span> AMN Studios. All rights reserved.'
     },
     ar: {
         nav_home: "الرئيسية",
+        nav_projects: "المشاريع",
         pill: "برمجة • أمن سيبراني • تعليم",
         hero_title: 'نبني <span class="grad">حلول رقمية آمنة</span><br>بطريقة صحيحة',
         hero_subtitle: "AMN Studios تطوّر برمجيات حديثة بعقلية أمن سيبراني أولاً، وتعلّم البرمجة بأسلوب عملي وبأفضل الممارسات.",
@@ -80,6 +85,9 @@ const dict = {
         chip_cyber: "أمن سيبراني",
         chip_edu: "تعليم",
         chip_secure: "آمن",
+
+        projects_title: "المشاريع",
+        projects_desc: "بعض أعمالنا المختارة مع تركيز على واجهات نظيفة، أداء عالي، وتصميم يراعي الأمان.",
 
         footer: '© <span id="year"></span> AMN Studios. جميع الحقوق محفوظة.'
     }
@@ -211,3 +219,28 @@ window.addEventListener("resize", () => {
 
 // ===== Init =====
 applyLang("en");
+
+// ===== Reveal on scroll (IntersectionObserver) =====
+(function () {
+    const els = Array.from(document.querySelectorAll(".reveal"));
+    if (!els.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+        els.forEach((el) => el.classList.add("is-in"));
+        return;
+    }
+
+    const io = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((ent) => {
+                if (ent.isIntersecting) {
+                    ent.target.classList.add("is-in");
+                    io.unobserve(ent.target);
+                }
+            });
+        },
+        { threshold: 0.12 }
+    );
+
+    els.forEach((el) => io.observe(el));
+})();
